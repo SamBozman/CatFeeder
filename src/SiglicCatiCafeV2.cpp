@@ -30,9 +30,44 @@ HX711_ADC LoadCell(HX711_dout, HX711_sck);
 const int calVal_eepromAdress = 0;
 unsigned long t = 0;
 
+float currentCellVal = 0;
+float previousCellVal = 0;
+
 // static float previousCellVal = 0;
-const float KonaWeight = 5045; // Kona Cat weight as of Aug, 2023
-// TODO: const float LuckyWeight = ??
+const float KonaWeight = 5045;  // Kona Cat weight as of Aug 29, 2023
+const float LuckyWeight = 6078; // Lucky Cat weight as of Aug 29, 2023
+
+const float checkWeight = 3760;
+
+// FUNCTIONS
+// ###################################################################################
+float diff(float num1, float num2) {
+  float result = abs(num2 - num1);
+  return result;
+}
+
+void isKona(float checkWeight) {
+  if ((currentCellVal >= (checkWeight - (checkWeight * .05))) &&
+      (currentCellVal <= (checkWeight + (checkWeight * .05))) &&
+      (stepper.currentPosition() == 0)) {
+
+    Serial.println("Opening COVER!");
+    stepper.moveTo(-1224);   // Set target position OPEN:
+    stepper.runToPosition(); // Run to position with set speed
+
+  }
+
+  // else if cat  NOT within range and cover opened then CLOSE cover
+
+  else if (((currentCellVal <= (checkWeight - (checkWeight * .05))) ||
+            (currentCellVal >= (checkWeight + (checkWeight * .05)))) &&
+           (stepper.currentPosition() == -1224)) {
+
+    Serial.println("CLOSING COVER!");
+    stepper.moveTo(0);       // Set target position "CLOSED"
+    stepper.runToPosition(); // Run to position with set speed
+  }
+}
 
 //*****************************************************************************************************
 void setup() {
@@ -40,6 +75,12 @@ void setup() {
   delay(10);
   Serial.println();
   Serial.println("Starting...");
+
+  // Set the maximum steps per second:
+  stepper.setMaxSpeed(1000);
+  // Set the maximum acceleration in steps per second^2:
+  stepper.setAcceleration(200);
+  stepper.setCurrentPosition(0);
 
   LoadCell.begin();
   // LoadCell.setReverseOutput(); //uncomment to turn a negative output value to
@@ -90,9 +131,15 @@ void loop() {
   // get smoothed value from the dataset:
   if (newDataReady) {
     if (millis() > t + serialPrintInterval) {
-      float i = LoadCell.getData();
-      Serial.print("Load_cell output val: ");
-      Serial.println(i);
+      currentCellVal = LoadCell.getData();
+
+      if (diff(previousCellVal, currentCellVal) <
+          4) { // if data from load cell is stable then ....
+        Serial.print("Load_cell output val: ");
+        Serial.println(currentCellVal);
+        isKona(KonaWeight);
+      }
+      previousCellVal = currentCellVal;
       newDataReady = 0;
       t = millis();
     }
