@@ -37,7 +37,7 @@ float previousCellVal = 0;
 const float KonaWeight = 5045;  // Kona Cat weight as of Aug 29, 2023
 const float LuckyWeight = 6078; // Lucky Cat weight as of Aug 29, 2023
 
-const float checkWeight = 3760;
+const float testWeight = 3760; // 8Lb weight for testing
 
 // FUNCTIONS
 // ###################################################################################
@@ -47,6 +47,7 @@ float diff(float num1, float num2) {
 }
 
 void isKona(float checkWeight) {
+
   if ((currentCellVal >= (checkWeight - (checkWeight * .05))) &&
       (currentCellVal <= (checkWeight + (checkWeight * .05))) &&
       (stepper.currentPosition() == 0)) {
@@ -132,9 +133,10 @@ void loop() {
   if (newDataReady) {
     if (millis() > t + serialPrintInterval) {
       currentCellVal = LoadCell.getData();
+      // Serial.print("Load_cell output val: ");
 
-      if (diff(previousCellVal, currentCellVal) <
-          4) { // if data from load cell is stable then ....
+      // if data from load cell is stable then ....
+      if (diff(previousCellVal, currentCellVal) < 10) {
         Serial.print("Load_cell output val: ");
         Serial.println(currentCellVal);
         isKona(KonaWeight);
