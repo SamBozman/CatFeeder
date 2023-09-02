@@ -36,8 +36,8 @@ float previousCellVal = 0;
 // static float previousCellVal = 0;
 const float KonaWeight = 5045;  // Kona Cat weight as of Aug 29, 2023
 const float LuckyWeight = 6078; // Lucky Cat weight as of Aug 29, 2023
-
-const float testWeight = 3760; // 8Lb weight for testing
+const double var = .08;         // range variance
+const float testWeight = 3760;  // 8Lb weight for testing
 
 // FUNCTIONS
 // ###################################################################################
@@ -48,8 +48,8 @@ float diff(float num1, float num2) {
 
 void isKona(float checkWeight) {
 
-  if ((currentCellVal >= (checkWeight - (checkWeight * .05))) &&
-      (currentCellVal <= (checkWeight + (checkWeight * .05))) &&
+  if ((currentCellVal >= (checkWeight - (checkWeight * var))) &&
+      (currentCellVal <= (checkWeight + (checkWeight * var))) &&
       (stepper.currentPosition() == 0)) {
 
     Serial.println("Opening COVER!");
@@ -60,8 +60,8 @@ void isKona(float checkWeight) {
 
   // else if cat  NOT within range and cover opened then CLOSE cover
 
-  else if (((currentCellVal <= (checkWeight - (checkWeight * .05))) ||
-            (currentCellVal >= (checkWeight + (checkWeight * .05)))) &&
+  else if (((currentCellVal <= (checkWeight - (checkWeight * var))) ||
+            (currentCellVal >= (checkWeight + (checkWeight * var)))) &&
            (stepper.currentPosition() == -1224)) {
 
     Serial.println("CLOSING COVER!");
