@@ -5,18 +5,6 @@
 #endif
 #include <AccelStepper.h>
 
-// Motor pin definitions:
-#define motorPin1 8  // IN1 on the ULN2003 driver
-#define motorPin2 9  // IN2 on the ULN2003 driver
-#define motorPin3 10 // IN3 on the ULN2003 driver
-#define motorPin4 11 // IN4 on the ULN2003 driver
-#
-// Motor pin definitions:
-#define motorPin1 8  // IN1 on the ULN2003 driver
-#define motorPin2 9  // IN2 on the ULN2003 driver
-#define motorPin3 10 // IN3 on the ULN2003 driver
-#define motorPin4 11 // IN4 on the ULN2003 driver
-// Motor pin definitions:
 #define motorPin1 8  // IN1 on the ULN2003 driver
 #define motorPin2 9  // IN2 on the ULN2003 driver
 #define motorPin3 10 // IN3 on the ULN2003 driver
@@ -51,13 +39,14 @@ const float LuckyWeight = 6078; // Lucky Cat weight as of Aug 29, 2023
 const double var = .08;         // range variance
 const float testWeight = 1420;  // 3Lb weight for testing
 
-// FUNCTIONS
-// ###################################################################################
+// FUNCTION ################################################################
+
 float diff(float num1, float num2) {
   float result = abs(num2 - num1);
   return result;
 }
 
+// FUNCTION ################################################################
 void checkWeight(float weight) {
 
   if ((currentCellVal >= (weight - (weight * var))) &&
@@ -74,16 +63,15 @@ void checkWeight(float weight) {
       count = 0;
       Serial.println("Opening COVER!");
       coverOpen = true;
+      stepper.moveTo(-1224);   // Set target position OPEN:
+      stepper.runToPosition(); // Run to position with set speed
     }
-
-    // stepper.moveTo(-1224);   // Set target position OPEN:
-    // stepper.runToPosition(); // Run to position with set speed
 
   }
 
   // else if cat  NOT within range and cover opened then CLOSE cover
 
-  else if ((currentCellVal <= 10) && (coverOpen == true)) {
+  else if ((currentCellVal <= 100) && (coverOpen == true)) {
     if (count == 0)
       countTimer = millis();
     Serial.print("Load_cell output val: ");
@@ -96,13 +84,13 @@ void checkWeight(float weight) {
       count = 0;
       Serial.println("Closing COVER!");
       coverOpen = false;
+      stepper.moveTo(0);       // Set target position "CLOSED"
+      stepper.runToPosition(); // Run to position with set speed
     }
-    // stepper.moveTo(0);       // Set target position "CLOSED"
-    // stepper.runToPosition(); // Run to position with set speed
   }
 }
 
-//*****************************************************************************************************
+//*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void setup() {
   Serial.begin(57600);
   delay(10);
@@ -151,7 +139,7 @@ void setup() {
   }
 }
 
-//*****************************************************************************************************
+//*====================================================================================================
 void loop() {
 
   if ((!countTimer == 0) && (millis() - countTimer >= 1000)) {

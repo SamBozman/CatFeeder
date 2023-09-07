@@ -1,11 +1,23 @@
 
 
+#include <AccelStepper.h>
 #include <HX711_ADC.h>
 #if defined(ESP8266) || defined(ESP32) || defined(AVR)
 #include <EEPROM.h>
 #endif
 #include <AccelStepper.h>
 
+// Motor pin definitions:
+#define motorPin1 8  // IN1 on the ULN2003 driver
+#define motorPin2 9  // IN2 on the ULN2003 driver
+#define motorPin3 10 // IN3 on the ULN2003 driver
+#define motorPin4 11 // IN4 on the ULN2003 driver
+
+// Motor pin definitions:
+#define motorPin1 8  // IN1 on the ULN2003 driver
+#define motorPin2 9  // IN2 on the ULN2003 driver
+#define motorPin3 10 // IN3 on the ULN2003 driver
+#define motorPin4 11 // IN4 on the ULN2003 driver
 // Motor pin definitions:
 #define motorPin1 8  // IN1 on the ULN2003 driver
 #define motorPin2 9  // IN2 on the ULN2003 driver
