@@ -59,9 +59,7 @@ void setup() {
   Serial.println();
   Serial.println("Starting...");
 
-  // Set the maximum steps per second:
   stepper.setMaxSpeed(1000);
-  // Set the maximum acceleration in steps per second^2:
   stepper.setAcceleration(200);
   stepper.setCurrentPosition(0);
 
